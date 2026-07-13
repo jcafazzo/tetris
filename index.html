@@ -6,9 +6,9 @@
 <title>TETRIS // FUSE</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#000;color:#fff;font-family:system-ui,-apple-system,sans-serif;overflow:hidden;display:flex;justify-content:center;align-items:center;height:100vh;user-select:none}
-  #wrap{display:flex;align-items:flex-start;gap:28px;position:relative}
-  #cw{position:relative;line-height:0;border-radius:8px;overflow:hidden;box-shadow:0 0 60px rgba(100,80,255,0.12),0 0 120px rgba(100,80,255,0.06);background:url('art.png') center/cover no-repeat;background-color:#05050a;background-blend-mode:overlay;}
+  body{background:url('art.png') center/cover no-repeat fixed #000;color:#fff;font-family:system-ui,-apple-system,sans-serif;overflow:hidden;display:flex;justify-content:center;align-items:center;height:100vh;user-select:none}
+  #wrap{display:flex;align-items:flex-start;gap:28px;position:relative;background:rgba(5,5,10,0.6);backdrop-filter:blur(8px);border-radius:16px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.03)}
+  #cw{position:relative;line-height:0;border-radius:8px;overflow:hidden}
   canvas{display:block}
   #sb{display:flex;flex-direction:column;gap:14px;min-width:130px;padding-top:4px}
   .pnl{position:relative}
@@ -133,6 +133,7 @@ scn.background=null;
 const ca=new THREE.PerspectiveCamera(50,1,0.1,50);
 ca.position.set(COLS/2-0.5,ROWS/2-1,24);ca.lookAt(COLS/2-0.5,ROWS/2-1,0);
 const ren=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
+ren.setClearColor(0x000000,0);
 ren.setPixelRatio(Math.min(devicePixelRatio,2));ren.toneMapping=THREE.ACESFilmicToneMapping;ren.toneMappingExposure=1.2;
 function rs(){const mh=window.innerHeight-48,h=Math.min(mh,680),w=Math.round(h*0.56);ren.setSize(w,h);ca.aspect=w/h;ca.updateProjectionMatrix()}
 rs();window.addEventListener('resize',rs);
@@ -146,7 +147,7 @@ const rim=new THREE.DirectionalLight(0xff4488,0.15);rim.position.set(0,-8,8);scn
 const rim2=new THREE.DirectionalLight(0x44ff88,0.1);rim2.position.set(8,-2,-4);scn.add(rim2);
 
 // Board
-const bbg=new THREE.Mesh(new THREE.PlaneGeometry(COLS,ROWS),new THREE.MeshBasicMaterial({color:0x080810,transparent:true,opacity:0.5}));
+const bbg=new THREE.Mesh(new THREE.PlaneGeometry(COLS,ROWS),new THREE.MeshBasicMaterial({color:0x0a0a16,transparent:true,opacity:0.7}));
 bbg.position.set(COLS/2-0.5,ROWS/2-0.5,-0.01);scn.add(bbg);
 const grMat=new THREE.MeshBasicMaterial({color:0x4466ff,transparent:true,opacity:0.04,side:THREE.DoubleSide});
 const gr=new THREE.Mesh(new THREE.RingGeometry(5.2,6.2,60),grMat);gr.position.set(COLS/2-0.5,ROWS/2-0.5,0.02);scn.add(gr);
