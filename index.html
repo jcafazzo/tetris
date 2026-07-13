@@ -316,13 +316,14 @@ rb.addEventListener('click',restart);
 // Touch controls
 document.getElementById('tc').addEventListener('click',e=>{
   const btn=e.target.closest('[data-action]');if(!btn)return;
+  e.preventDefault();
   ia();const a=btn.dataset.action;
   if(gameOver){if(a==='drop')restart();return;}
   switch(a){
-    case'left':mov(-1,0)&&(upGhost(),ddir=-1,das=0);break;
-    case'right':mov(1,0)&&(upGhost(),ddir=1,das=0);break;
+    case'left':mov(-1,0)&&(upGhost(),ddir=0,das=0);break;
+    case'right':mov(1,0)&&(upGhost(),ddir=0,das=0);break;
     case'rotate':rot();upGhost();break;
-    case'down':mov(0,-1)&&(upGhost(),sc+=1,dtmr=0,scEl.textContent=sc.toLocaleString());break;
+    case'down':mov(0,-1)&&(upGhost(),sc+=1,dtmr=0,scEl.textContent=sc.toLocaleString(),ddir=0,das=0);break;
     case'drop':drop();break;
   }
 });
