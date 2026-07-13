@@ -8,7 +8,7 @@
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:#000;color:#fff;font-family:system-ui,-apple-system,sans-serif;overflow:hidden;display:flex;justify-content:center;align-items:center;height:100vh;user-select:none}
   #wrap{display:flex;align-items:flex-start;gap:28px;position:relative}
-  #cw{position:relative;line-height:0;border-radius:8px;overflow:hidden;box-shadow:0 0 60px rgba(100,80,255,0.12),0 0 120px rgba(100,80,255,0.06)}
+  #cw{position:relative;line-height:0;border-radius:8px;overflow:hidden;box-shadow:0 0 60px rgba(100,80,255,0.12),0 0 120px rgba(100,80,255,0.06);background:url('art.png') center/cover no-repeat;background-color:#05050a;background-blend-mode:overlay;}
   canvas{display:block}
   #sb{display:flex;flex-direction:column;gap:14px;min-width:130px;padding-top:4px}
   .pnl{position:relative}
@@ -125,47 +125,14 @@ const SHAPES={I:[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],O:[[1,1],[1,1]],T:[[0,
 const cvs=document.getElementById('gc');
 const scn=new THREE.Scene();
 
-// ═══ ART BACKDROP — visible, atmospheric, reactive ═══
-const texLoader=new THREE.TextureLoader();
-
-// Main backdrop — the image visible at 35% with scanline + vignette
-const artTex=texLoader.load('art.png');
-artTex.wrapS=artTex.wrapT=THREE.ClampToEdgeWrapping;
-
-const backdropMat=new THREE.MeshBasicMaterial({
-  map:artTex,
-  transparent:true,opacity:0.35,depthWrite:false,
-});
-const backdrop=new THREE.Mesh(new THREE.PlaneGeometry(20,26),backdropMat);
-backdrop.position.set(COLS/2-0.5,ROWS/2-0.5,-4);scn.add(backdrop);
-
-// Vignette overlay — darkens edges
-const vgCanvas=document.createElement('canvas');vgCanvas.width=256;vgCanvas.height=256;
-const vgCtx=vgCanvas.getContext('2d');
-const grad=vgCtx.createRadialGradient(128,128,0,128,128,128);
-grad.addColorStop(0,'rgba(0,0,0,0)');grad.addColorStop(0.4,'rgba(0,0,0,0)');grad.addColorStop(0.7,'rgba(0,0,0,0.3)');grad.addColorStop(1,'rgba(0,0,0,0.85)');
-vgCtx.fillStyle=grad;vgCtx.fillRect(0,0,256,256);
-const vgTex=new THREE.CanvasTexture(vgCanvas);vgTex.wrapS=vgTex.wrapT=THREE.ClampToEdgeWrapping;
-const vgMat=new THREE.MeshBasicMaterial({map:vgTex,transparent:true,opacity:1,depthWrite:false,side:THREE.DoubleSide});
-const vg=new THREE.Mesh(new THREE.PlaneGeometry(24,30),vgMat);
-vg.position.set(COLS/2-0.5,ROWS/2-0.5,-3.5);scn.add(vg);
-
-// Scanline overlay
-const slCanvas=document.createElement('canvas');slCanvas.width=4;slCanvas.height=256;
-const slCtx=slCanvas.getContext('2d');slCtx.fillStyle='rgba(0,0,0,0.07)';
-for(let y=0;y<256;y+=4)slCtx.fillRect(0,y,4,1);
-const slTex=new THREE.CanvasTexture(slCanvas);slTex.wrapS=slTex.wrapT=THREE.RepeatWrapping;
-slTex.repeat.set(10,30);
-const slMat=new THREE.MeshBasicMaterial({map:slTex,transparent:true,opacity:0.5,depthWrite:false,side:THREE.DoubleSide,blending:THREE.MultiplyBlending});
-const sl=new THREE.Mesh(new THREE.PlaneGeometry(24,30),slMat);
-sl.position.set(COLS/2-0.5,ROWS/2-0.5,-3.4);scn.add(sl);
-
-scn.background=new THREE.Color(0x05050a);
+// ═══ CSS BACKDROP — image visible as canvas background ═══
+// (image renders as CSS background on #cw, scene is transparent)
+scn.background=null;
 
 // Camera & Renderer
 const ca=new THREE.PerspectiveCamera(50,1,0.1,50);
 ca.position.set(COLS/2-0.5,ROWS/2-1,24);ca.lookAt(COLS/2-0.5,ROWS/2-1,0);
-const ren=new THREE.WebGLRenderer({canvas:cvs,antialias:true});
+const ren=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
 ren.setPixelRatio(Math.min(devicePixelRatio,2));ren.toneMapping=THREE.ACESFilmicToneMapping;ren.toneMappingExposure=1.2;
 function rs(){const mh=window.innerHeight-48,h=Math.min(mh,680),w=Math.round(h*0.56);ren.setSize(w,h);ca.aspect=w/h;ca.updateProjectionMatrix()}
 rs();window.addEventListener('resize',rs);
