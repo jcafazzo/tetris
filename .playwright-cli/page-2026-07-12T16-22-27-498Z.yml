@@ -1,0 +1,11 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - generic:
+      - heading "Game Over" [level=1]
+      - paragraph: "0"
+      - button "Play Again"
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: Score
+      - generic [ref=e8]: "0"
+    - generic [ref=e9]: Next

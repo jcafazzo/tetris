@@ -27,6 +27,35 @@
   #ov .btn:active{transform:scale(0.96)}
   @media(hover:hover)and(pointer:fine){#ov .btn:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12)}}
   @media(prefers-reduced-motion:reduce){#ov{transition:opacity 0.15s ease}#ov h1{transition:none;transform:none!important}.pnl .val{transition:none}}
+
+  /* Touch controls */
+  #tc{display:none;position:absolute;left:0;right:0;bottom:0;padding:10px 12px env(safe-area-inset-bottom,10px);z-index:15;pointer-events:none}
+  #tc>*{pointer-events:auto}
+  .tc-row{display:flex;justify-content:center;gap:8px;margin-bottom:8px}
+  .tc-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;color:rgba(255,255,255,0.3);font-size:18px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;transition:background 0.1s}
+  .tc-btn:active{background:rgba(255,255,255,0.1)}
+  .tc-btn.drop{width:116px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.08)}
+  .tc-btn.drop:active{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15)}
+  .tc-btn .lb{font-size:7px;letter-spacing:1px;color:rgba(255,255,255,0.12);position:absolute;bottom:4px}
+
+  @media(max-width:600px),(max-height:500px){
+    body{align-items:flex-start;padding-top:env(safe-area-inset-top,0)}
+    #wrap{flex-direction:column;align-items:center;gap:8px;padding:0 0 0 0;width:100vw;height:100vh;height:100dvh}
+    #cw{border-radius:0;box-shadow:none;width:100%;flex-shrink:0}
+    canvas{width:100%!important;height:auto!important;max-height:60vh}
+    #sb{flex-direction:row;gap:6px;min-width:0;width:100%;padding:2px 8px;justify-content:center}
+    .pnl{flex:1;text-align:center}
+    .pnl .lb{font-size:7px;letter-spacing:1px;margin-bottom:2px}
+    .pnl .val{font-size:18px}
+    #nwrap{min-height:40px}
+    #next-c{width:60px;height:40px}
+    #tc{display:block}
+    #ov{border-radius:0}
+    #ov h1{font-size:24px}
+    #ov .btn{padding:8px 24px;font-size:12px}
+  }
+  @media(max-height:700px){#tc .tc-btn{width:44px;height:44px;font-size:16px}.tc-btn.drop{width:100px}}
+  @media(max-height:600px){#tc .tc-btn{width:38px;height:38px;font-size:14px}.tc-btn.drop{width:84px;font-size:11px}#tc .tc-row{margin-bottom:4px}}
 </style>
 </head>
 <body>
@@ -44,6 +73,17 @@
     <div class="pnl"><div class="lb">Score</div><div class="val" id="sc">0</div></div>
     <div class="pnl"><div class="lb">Lines</div><div class="val" id="ln">0</div></div>
     <div class="pnl"><div class="lb">Next</div><div id="nwrap"><canvas id="next-c" width="110" height="72"></canvas></div></div>
+  </div>
+</div>
+<div id="tc">
+  <div class="tc-row">
+    <button class="tc-btn" data-action="left">←</button>
+    <button class="tc-btn" data-action="rotate">↑</button>
+    <button class="tc-btn" data-action="right">→</button>
+    <button class="tc-btn" data-action="down">↓</button>
+  </div>
+  <div class="tc-row">
+    <button class="tc-btn drop" data-action="drop">DROP</button>
   </div>
 </div>
 
@@ -272,6 +312,20 @@ document.addEventListener('keydown',e=>{
     case' ':drop();e.preventDefault();break;}});
 document.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'&&ddir===-1)ddir=0;if(e.key==='ArrowRight'&&ddir===1)ddir=0;});
 rb.addEventListener('click',restart);
+
+// Touch controls
+document.getElementById('tc').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-action]');if(!btn)return;
+  ia();const a=btn.dataset.action;
+  if(gameOver){if(a==='drop')restart();return;}
+  switch(a){
+    case'left':mov(-1,0)&&(upGhost(),ddir=-1,das=0);break;
+    case'right':mov(1,0)&&(upGhost(),ddir=1,das=0);break;
+    case'rotate':rot();upGhost();break;
+    case'down':mov(0,-1)&&(upGhost(),sc+=1,dtmr=0,scEl.textContent=sc.toLocaleString());break;
+    case'drop':drop();break;
+  }
+});
 
 // Game loop
 (function f(t){

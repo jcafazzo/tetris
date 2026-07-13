@@ -1,0 +1,28 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - generic:
+      - heading "Game Over" [level=1]
+      - paragraph: "Score: 84"
+      - button "Play Again" [active]
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "Score" [level=3] [ref=e7]
+      - generic [ref=e8]: "0"
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - heading "Lines" [level=3] [ref=e11]
+        - generic [ref=e12]: "0"
+      - generic [ref=e13]:
+        - heading "Level" [level=3] [ref=e14]
+        - generic [ref=e15]: "1"
+    - heading "Next" [level=3] [ref=e17]
+    - paragraph [ref=e21]:
+      - generic [ref=e22]: ←
+      - generic [ref=e23]: →
+      - text: move
+      - generic [ref=e24]: ↑
+      - text: rotate
+      - generic [ref=e25]: ↓
+      - text: soft drop
+      - generic [ref=e26]: Space
+      - text: hard drop
